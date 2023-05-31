@@ -62,17 +62,47 @@ Serial.println();
  
 dht.setup(DHTPIN, DHTesp::DHT11); //for DHT11 Connect DHT sensor to GPIO 17
 pinMode(LED,OUTPUT);
- 
+
 WiFi.begin(ssid, password); //Connect to your WiFi router
 Serial.println("");
  
 // Wait for connection
 while (WiFi.status() != WL_CONNECTED) {
 delay(500);
+Serial.print("Connecting");
 Serial.print(".");
 }
  
 //If connection successful show IP address in serial monitor
+
+Serial.println("");
+  Serial.println(" * File: weather.ino");
+  Serial.println(" * Author: SriBalaji");
+  Serial.println(" * Date: May 31, 2023");
+  Serial.println(" * Description: Arduino program for temperature and weather display");
+  Serial.println(" * Website: www.sribalaji.eu.org");
+  Serial.println(" *");
+  Serial.println(" * MIT License");
+  Serial.println(" *");
+  Serial.println(" * Copyright (c) 2023 SriBalaji");
+  Serial.println(" *");
+  Serial.println(" * Permission is hereby granted, free of charge, to any person obtaining a copy");
+  Serial.println(" * of this software and associated documentation files (the \"Software\"), to deal");
+  Serial.println(" * in the Software without restriction, including without limitation the rights");
+  Serial.println(" * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell");
+  Serial.println(" * copies of the Software, and to permit persons to whom the Software is");
+  Serial.println(" * furnished to do so, subject to the following conditions:");
+  Serial.println(" *");
+  Serial.println(" * The above copyright notice and this permission notice shall be included in all");
+  Serial.println(" * copies or substantial portions of the Software.");
+  Serial.println(" *");
+  Serial.println(" * THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR");
+  Serial.println(" * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,");
+  Serial.println(" * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE");
+  Serial.println(" * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER");
+  Serial.println(" * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,");
+  Serial.println(" * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE");
+  Serial.println(" * SOFTWARE.");
 Serial.println("");
 Serial.print("Connected to ");
 Serial.println(ssid);
@@ -85,7 +115,7 @@ server.on("/readADC", handleADC); //This page is called by java Script AJAX
 server.begin(); //Start server
 Serial.println("HTTP server started");
 }
- 
+
 void loop()
 {
 server.handleClient(); //Handle client requests
