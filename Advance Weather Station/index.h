@@ -14,9 +14,11 @@ const char MAIN_page[] PROGMEM = R"=====(
 }
 
 body {
-  background:#fff;
+  background: url('https://images.unsplash.com/photo-1549778399-f94fd24d4697?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80') no-repeat center center fixed;
+  background-size: cover;
   font-family: Montserrat, Arial, sans-serif;
 }
+
 h2{
   font-size:14px;
 }
