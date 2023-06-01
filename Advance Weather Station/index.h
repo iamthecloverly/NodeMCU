@@ -198,63 +198,57 @@ a{
 <script>
 setInterval(drawClock, 2000);
 
-function drawClock(){
-    var now = new Date();
-    var hour = now.getHours();
-    var minute = now.getMinutes();
-    var second = now.getSeconds();
+function drawClock() {
+  var now = new Date();
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var second = now.getSeconds();
 
-    //Date
-    var options = {year: 'numeric', month: 'long', day: 'numeric' };
-    var today  = new Date();
-    document.getElementById("date").innerHTML = today.toLocaleDateString("en-US", options);
+  // Date
+  var options = { year: 'numeric', month: 'long', day: 'numeric' };
+  var today = new Date();
+  document.getElementById("date").innerHTML = today.toLocaleDateString("en-US", options);
 
-    //hour
-    var hourAngle = (360*(hour/12))+((360/12)*(minute/60));
-    var minAngle = 360*(minute/60);
-    document.getElementById("hour").style.transform = "rotate("+(hourAngle)+"deg)";
-    //minute
-    document.getElementById("min").style.transform = "rotate("+(minAngle)+"deg)";
+  // Hour
+  var hourAngle = (360 * (hour / 12)) + ((360 / 12) * (minute / 60));
+  var minAngle = 360 * (minute / 60);
+  document.getElementById("hour").style.transform = "rotate(" + hourAngle + "deg)";
+  // Minute
+  document.getElementById("min").style.transform = "rotate(" + minAngle + "deg)";
 
-    // Get Humidity Temperature and Rain Data
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+  // Get Temperature, Humidity, and Pressure Data
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-    var txt = this.responseText;
-    var obj = JSON.parse(txt);
-    var rainValue = mapRange(obj.Rain, 0, 1023, 0, 100); // Map rain value to percentage (adjust range as per your rain sensor)
-    rainValue = Math.round(rainValue); // Round the rain percentage
-    document.getElementById("rain").innerHTML = rainValue + "%";
-    document.getElementById("temperature").innerHTML = Math.round(obj.Temperature) + "&deg;C";
-    document.getElementById("temp").innerHTML = Math.round(obj.Temperature) + "&deg;C";
-    document.getElementById("humidity").innerHTML = Math.round(obj.Humidity) + "%";
-    document.getElementById("pressure").innerHTML = Math.round(obj.Pressuremb) + " mb";
+      var data = JSON.parse(this.responseText);
+      var temperature = data.temperature;
+      var humidity = data.humidity;
+      var pressure = data.pressure;
 
-    // Additional functionality
-    if (rainValue > 80) {
-      document.getElementById("rain").style.color = "red";
-    } else {
-      document.getElementById("rain").style.color = "white";
+      // Update temperature, humidity, and pressure values
+      document.getElementById("temp").innerHTML = temperature + " &deg;C";
+      document.getElementById("humidity").innerHTML = humidity + "%";
+      document.getElementById("pressure").innerHTML = pressure + " mb";
+
+      // Additional functionality
+      if (temperature > 30) {
+        document.getElementById("temp").style.color = "red";
+      } else if (temperature < 10) {
+        document.getElementById("temp").style.color = "blue";
+      } else {
+        document.getElementById("temp").style.color = "white";
+      }
+
+      if (humidity > 70) {
+        document.getElementById("humidity").style.color = "blue";
+      } else {
+        document.getElementById("humidity").style.color = "white";
+      }
     }
-
-    if (obj.Temperature > 30) {
-      document.getElementById("temperature").style.color = "red";
-    } else if (obj.Temperature < 10) {
-      document.getElementById("temperature").style.color = "blue";
-    } else {
-      document.getElementById("temperature").style.color = "white";
-    }
-
-    if (obj.Humidity > 70) {
-      document.getElementById("humidity").style.color = "blue";
-    } else {
-      document.getElementById("humidity").style.color = "white";
-    }
-  }
-};
-xhttp.open("GET", "readADC", true);
-xhttp.send();
-
+  };
+  xhttp.open("GET", "readBMP", true);
+  xhttp.send();
+  
   // Function to map a value from one range to another
   function mapRange(value, minInput, maxInput, minOutput, maxOutput) {
   return (value - minInput) * (maxOutput - minOutput) / (maxInput - minInput) + minOutput;

@@ -1,6 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BMP280.h>
+
 
 #include "index.h" //Our HTML webpage contents with javascripts
 #include "DHTesp.h" //DHT11 Library for ESP
@@ -14,6 +17,8 @@
 #define ALTITUDE 1655.0 // Altitude in meters
  
 DHTesp dht;
+
+Adafruit_BMP280 bmp; // Create an instance of the BMP280 sensor
 
 const char* ssid = "FROSTY";
 const char* password = "12345678";
@@ -34,9 +39,12 @@ double Tdeg, Tfar, phg, pmb;
  
 int rain = analogRead(A0);
  
+float pressure = bmp.readPressure() / 100.0; // Read pressure in Pa and convert to hPa
+
+float altitude = bmp.readAltitude(ALTITUDE); // Read altitude in meters
+
 //Create JSON data
-String data = "{\"Rain\":\""+String(rain)+"\",\"Pressuremb\":\""+String(pmb)+"\",\"Pressurehg\":\""+String(phg)+"\", \"Temperature\":\""+ String(temperature) +"\", \"Humidity\":\""+ String(humidity) +"\"}";
- 
+String data = "{\"Rain\":\"" + String(rain) + "\",\"Pressuremb\":\"" + String(pressure) + "\",\"Pressurehg\":\"" + String(pressure / 33.8639) + "\", \"Temperature\":\"" + String(temperature) + "\", \"Humidity\":\"" + String(humidity) + "\", \"Altitude\":\"" + String(altitude) + "\"}"; 
 digitalWrite(LED,!digitalRead(LED)); //Toggle LED on data request ajax
 server.send(200, "text/plane", data); //Send ADC value, temperature and humidity JSON to client ajax request
  
@@ -44,7 +52,7 @@ delay(dht.getMinimumSamplingPeriod());
  
 humidity = dht.getHumidity();
 temperature = dht.getTemperature();
- 
+
 Serial.print("H:");
 Serial.println(humidity);
 Serial.print("T:");
@@ -73,6 +81,11 @@ Serial.print("Connecting");
 Serial.print(".");
 }
  
+if (!bmp.begin(0x76)) {
+  Serial.println("Could not find a valid BMP280 sensor, check wiring!");
+  while (1);
+}
+
 //If connection successful show IP address in serial monitor
 
 Serial.println("");
